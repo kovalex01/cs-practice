@@ -3,18 +3,21 @@ def parse_record(line: str) -> dict:
     try:
         city, temperature, date = line.strip().split(";")
 
+        city = city.strip()
+        temperature = temperature.strip().replace(",", ".")
+        date = date.strip()
+
         if not city or not date:
             return None
 
         return {
             "city": city,
             "temperature": float(temperature),
-            "date": date,
+            "date": date
         }
 
     except (ValueError, TypeError):
         return None
-
 
 def read_valid(lines: list[str]) -> list[dict]:
     records = []
