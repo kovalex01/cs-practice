@@ -11,7 +11,7 @@ def parse_event(line: str) -> dict:
 
     time, level, message = parts
 
-    if level not in LEVELS:
+    if level not in {"DEBUG", "INFO", "WARNING", "ERROR"}:
         raise ValueError
 
     return {
@@ -19,7 +19,6 @@ def parse_event(line: str) -> dict:
         "level": level,
         "message": message
     }
-
 
 def count_levels(lines: list[str]) -> dict:
     counts = {}

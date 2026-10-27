@@ -3,31 +3,16 @@ ALLOWED_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
 LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
 LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
 
-
-
-
-
-
-
 path = input().strip()
 
 with open(path, encoding="utf-8") as log:
-    lines = list(log)
+    counts = count_levels(log)
 
-counts = count_levels(lines)
-
-total = sum(
+print(sum(
     count for level, count in counts.items()
     if level != "BROKEN"
-)
-
-print(total)
+))
 print(counts.get("ERROR", 0))
 print(counts.get("BROKEN", 0))
-
-errors = top_errors(lines, 5)
-
-with open("report.txt", "w", encoding="utf-8") as report:
-    report.write(format_report(counts, errors))
 
 
