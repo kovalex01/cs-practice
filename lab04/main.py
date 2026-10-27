@@ -1,17 +1,19 @@
-from stats import parse_record
+from collections import defaultdict
+from stats import parse_record, average_by_city, warmest_city, read_valid
 import sys
-#lines = sys.stdin.read().splitlines()
-lines = ["Азов;24.5;2026-07-01","Азов;25.5;2026-07-02 ","trash","Таганрог;30;2026-07-01"]
-#lines = sys.stdin.read().splitlines()
-c=0
-gen=[]
-for x in lines:
-    gen.append(parse_record(x))
-for x in gen:
+lines = sys.stdin.read().splitlines()
+
+records = read_valid(lines)
 
 
-print(c)
+total_non_empty = sum(1 for line in lines if line.strip())
+skipped = total_non_empty - len(records)
 
+averages = average_by_city(records)
+warmest = warmest_city(records)
 
+print(len(records))
+print(skipped)
 
-
+if warmest:
+    print(averages[warmest])
