@@ -3,10 +3,10 @@ from logstats import parse_event, count_levels, format_report, top_errors
 
 
 path = input().strip()
-
+print("FILE:", repr(path))
 with open(path, encoding="utf-8") as log:
     counts = count_levels(log)
-
+print("COUNTS:", counts)
 with open(path, encoding="utf-8") as log:
     errors = top_errors(log, 5)
 
