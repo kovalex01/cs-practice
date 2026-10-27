@@ -1,5 +1,3 @@
-ALLOWED_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
-LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
 LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
 
 
@@ -11,7 +9,7 @@ def parse_event(line: str) -> dict:
 
     time, level, message = parts
 
-    if level not in {"DEBUG", "INFO", "WARNING", "ERROR"}:
+    if level not in LEVELS:
         raise ValueError
 
     return {
@@ -20,7 +18,8 @@ def parse_event(line: str) -> dict:
         "message": message
     }
 
-def count_levels(lines: list[str]) -> dict:
+
+def count_levels(lines) -> dict:
     counts = {}
 
     for line in lines:
@@ -37,7 +36,7 @@ def count_levels(lines: list[str]) -> dict:
     return counts
 
 
-def top_errors(lines: list[str], n: int) -> list[list]:
+def top_errors(lines, n: int) -> list[list]:
     errors = {}
 
     for line in lines:
@@ -46,13 +45,12 @@ def top_errors(lines: list[str], n: int) -> list[list]:
 
         try:
             event = parse_event(line)
-
-            if event["level"] == "ERROR":
-                message = event["message"]
-                errors[message] = errors.get(message, 0) + 1
-
         except ValueError:
             continue
+
+        if event["level"] == "ERROR":
+            message = event["message"]
+            errors[message] = errors.get(message, 0) + 1
 
     result = [[message, count] for message, count in errors.items()]
     result.sort(key=lambda x: (-x[1], x[0]))
@@ -74,4 +72,3 @@ def format_report(counts: dict, errors: list[list]) -> str:
         result.append(f"- {message} — {count}")
 
     return "\n".join(result) + "\n"
-

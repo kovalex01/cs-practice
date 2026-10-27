@@ -1,24 +1,29 @@
-from logstats import count_levels, format_report, top_errors, parse_event
-ALLOWED_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
-LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
+from logstats import parse_event, count_levels, format_report, top_errors
 
-import os
+
 
 path = input().strip()
 
-if not path:
-    print("Ошибка: имя файла не введено")
-elif not os.path.isfile(path):
-    print(f"Ошибка: файл не найден: {path}")
-else:
-    with open(path, encoding="utf-8") as log:
-        counts = count_levels(log)
+with open(path, encoding="utf-8") as log:
+    counts = count_levels(log)
 
-    print(sum(
-        count for level, count in counts.items()
-        if level != "BROKEN"
-    ))
-    print(counts.get("ERROR", 0))
-    print(counts.get("BROKEN", 0))
+with open(path, encoding="utf-8") as log:
+    errors = top_errors(log, 5)
 
 
+
+error_count = counts.get("ERROR", 0)
+broken_count = counts.get("BROKEN", 0)
+
+total = sum(
+    count
+    for level, count in counts.items()
+    if level != "BROKEN"
+)
+print(total)
+print(error_count)
+print(broken_count)
+
+
+with open("report.txt", "w", encoding="utf-8") as report:
+    report.write(format_report(counts, errors))
