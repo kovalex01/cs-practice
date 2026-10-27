@@ -1,3 +1,4 @@
+ALLOWED_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
 def parse_event(line: str) -> dict:
     parts = line.strip().split(maxsplit=2)
 
