@@ -1,33 +1,27 @@
 ALLOWED_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
+LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR"}
+
+
 def parse_event(line: str) -> dict:
     parts = line.strip().split(maxsplit=2)
 
     if len(parts) != 3:
-        raise ValueError("Негодная строка")
+        raise ValueError
 
-    timestamp, level, message = parts
+    time, level, message = parts
 
-    if level not in ALLOWED_LEVELS:
-        raise ValueError("Неизвестный уровень")
-
-    if not message:
-        raise ValueError("Пустое сообщение")
+    if level not in LEVELS:
+        raise ValueError
 
     return {
-        "time": timestamp,
+        "time": time,
         "level": level,
         "message": message
     }
 
 
 def count_levels(lines: list[str]) -> dict:
-    counts = {
-        "DEBUG": 0,
-        "INFO": 0,
-        "WARNING": 0,
-        "ERROR": 0,
-        "BROKEN": 0
-    }
+    counts = {}
 
     for line in lines:
         if not line.strip():
@@ -35,9 +29,10 @@ def count_levels(lines: list[str]) -> dict:
 
         try:
             event = parse_event(line)
-            counts[event["level"]] += 1
+            level = event["level"]
+            counts[level] = counts.get(level, 0) + 1
         except ValueError:
-            counts["BROKEN"] += 1
+            counts["BROKEN"] = counts.get("BROKEN", 0) + 1
 
     return counts
 
@@ -60,8 +55,7 @@ def top_errors(lines: list[str], n: int) -> list[list]:
             continue
 
     result = [[message, count] for message, count in errors.items()]
-
-    result.sort(key=lambda x: (-x[1], x[0]))
+    result.sort(key=lambda item: (-item[1], item[0]))
 
     return result[:n]
 
@@ -69,11 +63,8 @@ def top_errors(lines: list[str], n: int) -> list[list]:
 def format_report(counts: dict, errors: list[list]) -> str:
     lines = []
 
-    for level in ["DEBUG", "INFO", "WARNING", "ERROR", "BROKEN"]:
-        lines.append(f"{level}: {counts[level]}")
-
-    lines.append("")
-    lines.append("TOP ERRORS:")
+    for level, count in counts.items():
+        lines.append(f"{level}: {count}")
 
     for message, count in errors:
         lines.append(f"{message}: {count}")
