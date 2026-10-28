@@ -20,12 +20,10 @@ total = sum(
     for level, count in counts.items()
     if level != "BROKEN"
 )
-#print(total)
-#print(error_count)
-#print(broken_count)
-print("29")
-print("7")
-print("2")
+print(total)
+print(error_count)
+print(broken_count)
+
 
 with open("report.txt", "w", encoding="utf-8") as report:
     report.write(format_report(counts, errors))
