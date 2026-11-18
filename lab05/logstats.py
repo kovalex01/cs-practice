@@ -52,10 +52,19 @@ def top_errors(lines, n: int) -> list[list]:
             message = event["message"]
             errors[message] = errors.get(message, 0) + 1
 
-    result = [[message, count] for message, count in errors.items()]
-    result.sort(key=lambda x: (-x[1], x[0]))
+        result = []
+        for message, count in errors.items():
+            result.append([message, count])
 
-    return result[:n]
+        
+        def sort_rule(item):
+            message = item[0]
+            count = item[1]
+            return (-count, message)  
+
+        
+        result.sort(key=sort_rule)
+        return result[:n]
 
 
 def format_report(counts: dict, errors: list[list]) -> str:
